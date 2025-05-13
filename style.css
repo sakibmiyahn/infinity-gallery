@@ -13,9 +13,38 @@ body {
 h1 {
   text-align: center;
   margin-top: 25px;
-  margin-bottom: 15px;
+  margin-bottom: 0;
   font-size: 40px;
   letter-spacing: 5px;
+}
+
+.contacts {
+  margin-top: auto;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 1.4rem;
+}
+
+.contacts .contact-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.contacts a {
+  text-decoration: none;
+  color: #333;
+  font-size: 2rem;
+  transition: color 0.3s ease;
+}
+
+.contacts i.fa-github:hover {
+  color: #501daf;
+}
+
+.contacts i.fa-linkedin:hover {
+  color: #0b66c2;
 }
 
 .loader {
