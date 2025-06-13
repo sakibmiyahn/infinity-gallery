@@ -43,6 +43,10 @@ h1 {
   color: #501daf;
 }
 
+.contacts i.fa-earth-oceania:hover {
+  color: #db0041;
+}
+
 .contacts i.fa-linkedin:hover {
   color: #0b66c2;
 }
