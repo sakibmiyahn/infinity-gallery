@@ -1,19 +1,17 @@
-import './style.css';
+import './styles.css';
 
 const imageContainer = document.getElementById('image-container');
 const loader = document.getElementById('loader');
 const scrollToTopBtn = document.getElementById('scroll-to-top');
 
 let imagesLoaded = 0;
+let photosArray = [];
 let ready = false;
 let totalImages = 0;
 
 // Unsplash proxy server API
 const count = 30;
-const apiUrl = `/api/get-photos?count=${count}`;
-
-// Track if we already displayed fallback
-let hasDisplayedFallback = false;
+const apiUrl = `/api/get-photos?&count=${count}`;
 
 // Check if all images were loaded
 function imageLoaded() {
@@ -33,15 +31,14 @@ function setAttributes(element, attributes) {
 }
 
 // Create Elements For Links & Photos, Add to DOM
-function displayPhotos(photoList, append = false) {
+function displayPhotos() {
   imagesLoaded = 0;
-  totalImages = photoList.length;
+  totalImages = photosArray.length;
 
-  if (!append) imageContainer.innerHTML = ''; // Clear old content
-
-  photoList.forEach((photo) => {
+  photosArray.forEach((photo) => {
     const wrapper = document.createElement('div');
     wrapper.classList.add('image-wrapper');
+
     const item = document.createElement('a');
 
     setAttributes(item, {
@@ -59,44 +56,38 @@ function displayPhotos(photoList, append = false) {
     });
 
     img.addEventListener('load', imageLoaded);
+
     item.appendChild(img);
     wrapper.appendChild(item);
     imageContainer.appendChild(wrapper);
   });
 
+  // Observe the last image
   observeLastImage();
 }
 
-// Load fallback first
-async function loadLocalPhotos() {
-  try {
-    const localResponse = await fetch('photos.json');
-    const localPhotos = await localResponse.json();
-
-    if (Array.isArray(localPhotos) && localPhotos.length > 0) {
-      displayPhotos(localPhotos);
-      hasDisplayedFallback = true;
-    }
-  } catch (error) {
-    console.error('Failed to load local fallback photos:', error);
-  }
-}
-
-// Then try to fetch live API data
+// Get photos from Unsplash Proxy API
 async function getPhotos() {
   try {
     const response = await fetch(apiUrl);
-    const fetchedPhotos = await response.json();
+    photosArray = await response.json();
 
-    if (!Array.isArray(fetchedPhotos) || fetchedPhotos.length === 0)
+    if (!Array.isArray(photosArray) || photosArray.length === 0)
       throw new Error('API returned no photos');
 
-    photosArray = fetchedPhotos;
-
-    // If fallback was shown, replace with fresh; otherwise just show
-    displayPhotos(fetchedPhotos, hasDisplayedFallback);
+    displayPhotos();
   } catch (error) {
-    console.error('Error fetching from Unsplash API:', error);
+    console.error('Failed to load photos from API:', error);
+  }
+}
+
+async function getLocalPhotos() {
+  try {
+    const response = await fetch('photos.json');
+    photosArray = await response.json();
+    displayPhotos();
+  } catch (error) {
+    console.error('Failed to load local photos.json:', error);
   }
 }
 
@@ -113,7 +104,7 @@ function observeLastImage() {
       }
     },
     {
-      rootMargin: '1000px',
+      rootMargin: '1000px', // pre-load when 1000px near
     }
   );
 
@@ -122,13 +113,18 @@ function observeLastImage() {
 
 // Scroll to top button
 window.addEventListener('scroll', () => {
-  scrollToTopBtn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+  if (window.scrollY > 300) scrollToTopBtn.style.display = 'flex';
+  else scrollToTopBtn.style.display = 'none';
 });
 
+// Scroll to top functionality
 scrollToTopBtn.addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  });
 });
 
-// Initial Load: Show fallback immediately, load API next
-loadLocalPhotos();
+// Initial load
+getLocalPhotos();
 getPhotos();
