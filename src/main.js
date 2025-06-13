@@ -10,7 +10,7 @@ let useLocalPhotos = false;
 
 // Unsplash proxy server API
 const count = 30;
-const apiUrl = `https://unsplash-proxy-oxrb.onrender.com/api/photos?&count=${count}`;
+const apiUrl = `/api/get-photos?&count=${count}`;
 
 // Check if all images were loaded
 function imageLoaded() {

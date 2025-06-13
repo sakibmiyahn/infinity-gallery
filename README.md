@@ -1,6 +1,6 @@
 # Infinity ∞ Gallery
 
-A simple infinite scrolling image gallery using the Unsplash API and vanilla JavaScript. Images load seamlessly as you scroll, with a "scroll to top" button for easy navigation.
+A simple infinite scrolling image gallery using the Unsplash API and Vite vanilla JavaScript. Images load seamlessly as you scroll, with a "scroll to top" button for easy navigation.
 
 ## Features
 
