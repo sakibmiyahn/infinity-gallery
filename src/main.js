@@ -126,5 +126,9 @@ scrollToTopBtn.addEventListener('click', () => {
 });
 
 // Initial load
-getLocalPhotos();
-getPhotos();
+async function main() {
+  await getLocalPhotos();
+  await getPhotos();
+}
+
+main();
